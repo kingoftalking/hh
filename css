@@ -1,0 +1,75 @@
+var canvas = document.getElementById("gameCanvas");
+var context = canvas.getContext("2d");
+
+var ballX = canvas.width / 2;
+var ballY = canvas.height / 2;
+var ballSpeedX = 5;
+var ballSpeedY = 5;
+
+var paddle1Y = 150;
+var paddle2Y = 150;
+var paddleHeight = 100;
+var paddleWidth = 10;
+
+var player1Score = 0;
+var player2Score = 0;
+
+function drawRect(leftX, topY, width, height, color) {
+  context.fillStyle = color;
+  context.fillRect(leftX, topY, width, height);
+}
+
+function drawCircle(centerX, centerY, radius, color) {
+  context.fillStyle = color;
+  context.beginPath();
+  context.arc(centerX, centerY, radius, 0, Math.PI*2, true);
+  context.fill();
+}
+
+function drawNet() {
+  for (var i=0; i < canvas.height; i+=40) {
+    drawRect(canvas.width/2-1, i, 2, 20, "white");
+  }
+}
+
+function resetBall() {
+  ballSpeedX = -ballSpeedX;
+  ballX = canvas.width/2;
+  ballY = canvas.height/2;
+}
+
+function moveEverything() {
+  ballX += ballSpeedX;
+  ballY += ballSpeedY;
+  
+  if (ballX < paddleWidth) {
+    if (ballY > paddle1Y && ballY < paddle1Y + paddleHeight) {
+      ballSpeedX = -ballSpeedX;
+      var deltaY = ballY - (paddle1Y + paddleHeight/2);
+      ballSpeedY = deltaY * 0.35;
+    } else {
+      player2Score++;
+      resetBall();
+    }
+  }
+  
+  if (ballX > canvas.width - paddleWidth) {
+    if (ballY > paddle2Y && ballY < paddle2Y + paddleHeight) {
+      ballSpeedX = -ballSpeedX;
+      var deltaY = ballY - (paddle2Y + paddleHeight/2);
+      ballSpeedY = deltaY * 0.35;
+    } else {
+      player1Score++;
+      resetBall();
+    }
+  }
+  
+  if (ballY < 0 || ballY > canvas.height) {
+    ballSpeedY = -ballSpeedY;
+  }
+}
+
+function drawEverything() {
+  drawRect(0, 0, canvas.width, canvas.height, "black");
+  drawCircle(ballX, ballY, 10, "white");
+  drawRect(0, paddle1
